@@ -1,1 +1,1 @@
-worker: python3 DawnAndDuskBOT.py
+worker: python3 sol.py
