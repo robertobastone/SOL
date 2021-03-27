@@ -3,6 +3,7 @@ import requests # manage rest api
 import string # working with strings
 import re # more features involving strings
 from os import environ # help heroku use credentials
+import tweepy # TWITTER INTEGRATION
 
 ##### hardcoded values
 expected_lyrics_length = 140
