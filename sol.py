@@ -11,8 +11,8 @@ range_lyrics_length = 10
 
 ##### GENERATING GET REQUEST
 base_url = 'https://api.lyrics.ovh/v1/'
-band = 'tool/'
-song = 'fear inoculum'
+band = 'Arctic monkeys' + '/'
+song = 'cornerstone'
 
 def getLyrics():
     try:
