@@ -58,7 +58,7 @@ def callTwitter(main_message):
             print("The user credentials are invalid.")
         else:
             print("The user credentials are valid.")
-            api.update_status(main_message + thanking_message)
+            api.update_status(main_message)
     except tweepy.error.TweepError as e:
         print("callTwitter - The following exception was catched: " + str(e))
         errorcode = str(e.api_code)
@@ -74,5 +74,6 @@ try:
     hashtags = getHashtags()
     message = lyrica + '\n' + authorAndSong + '\n' + hashtags
     print(message)
+    callTwitter(message)
 except Exception as e:
     print("main - The following exception was catched: " + str(e))
