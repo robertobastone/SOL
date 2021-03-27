@@ -23,13 +23,14 @@ def getLyrics():
         else:
             raw_lyrics = re.split('[\r\n]',resp.json()['lyrics']) # from json lyrics remove all \r and \n to get strings list
             lyrics = [raw_lyrics_element for raw_lyrics_element in raw_lyrics if raw_lyrics_element] # remove blank string
-            lyrica = '' # starting point
+            lyrica = '"' # starting point
             for i in range(range_lyrics_length):
                 if len(lyrica) > expected_lyrics_length or len(lyrica) + len(lyrics[i]) > expected_lyrics_length:
                     break # keep in check length in order to not
                 else:
                     lyrica += lyrics[i] + '\n'
-            return lyrica
+            lyricus = lyrica.rstrip() + '"' # ending point
+            return lyricus
     except Exception as e:
         print("getLyrics - The following exception was catched: " + str(e))
 
@@ -42,7 +43,7 @@ def getArtistAndSong():
         print("getSongAndArtist - The following exception was catched: " + str(e))
 
 def getHashtags():
-    return '#paroledechanson #lyrics'
+    return '#lyrics'
 
 def callTwitter(main_message):
     ##### GENERATING TWITTER REQUEST
