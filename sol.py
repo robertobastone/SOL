@@ -29,7 +29,7 @@ def getLyrics():
                     break # keep in check length in order to not
                 else:
                     lyrica += lyrics[i] + '\n'
-            lyricus = lyrica.rstrip() + '"' # ending point
+            lyricus = lyrica.rstrip() + '"\n' # ending point
             return lyricus
     except Exception as e:
         print("getLyrics - The following exception was catched: " + str(e))
