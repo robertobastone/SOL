@@ -6,7 +6,7 @@ from os import environ # help heroku use credentials
 import tweepy # TWITTER INTEGRATION
 
 ##### hardcoded values
-expected_lyrics_length = 140
+expected_lyrics_length = 180
 range_lyrics_length = 10
 
 ##### GENERATING GET REQUEST
@@ -25,7 +25,7 @@ def getLyrics():
             lyrics = [raw_lyrics_element for raw_lyrics_element in raw_lyrics if raw_lyrics_element] # remove blank string
             lyrica = '"' # starting point
             for i in range(range_lyrics_length):
-                if (len(lyrica) + len(lyrics[i]) > expected_lyrics_length:
+                if (len(lyrica) + len(lyrics[i])) > expected_lyrics_length:
                     break # keep in check length in order to not
                 else:
                     lyrica += lyrics[i] + '\n'
