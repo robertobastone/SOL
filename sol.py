@@ -12,7 +12,7 @@ range_lyrics_length = 10
 ##### GENERATING GET REQUEST
 base_url = 'https://api.lyrics.ovh/v1/'
 band = 'Arctic monkeys' + '/'
-song = 'cornerstone'
+song = 'arabella'
 
 def getLyrics():
     try:
@@ -25,7 +25,7 @@ def getLyrics():
             lyrics = [raw_lyrics_element for raw_lyrics_element in raw_lyrics if raw_lyrics_element] # remove blank string
             lyrica = '"' # starting point
             for i in range(range_lyrics_length):
-                if len(lyrica) > expected_lyrics_length or len(lyrica) + len(lyrics[i]) > expected_lyrics_length:
+                if (len(lyrica) + len(lyrics[i]) > expected_lyrics_length:
                     break # keep in check length in order to not
                 else:
                     lyrica += lyrics[i] + '\n'
