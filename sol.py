@@ -3,11 +3,10 @@ import requests # manage rest api
 import string # working with strings
 import re # more features involving strings
 from os import environ # help heroku use credentials
-import tweepy # TWITTER INTEGRATION
+import tweepy # twitter integration
 
 ##### hardcoded values
 expected_lyrics_length = 180
-range_lyrics_length = 10
 
 ##### GENERATING GET REQUEST
 base_url = 'https://api.lyrics.ovh/v1/'
@@ -22,22 +21,22 @@ def getLyrics():
             print('GET tasks status: {}'.format(resp.status_code))
         else:
             raw_lyrics = re.split('[\r\n]',resp.json()['lyrics']) # from json lyrics remove all \r and \n to get strings list
-            lyrics = [raw_lyrics_element for raw_lyrics_element in raw_lyrics if raw_lyrics_element] # remove blank string
+            lyrics = [raw_lyrics_element for raw_lyrics_element in raw_lyrics if raw_lyrics_element] # remove blank strings
             lyrica = '"' # starting point
-            for i in range(range_lyrics_length):
+            for i in range(len(lyrics)):
                 if (len(lyrica) + len(lyrics[i])) > expected_lyrics_length:
                     break # keep in check length in order to not
                 else:
                     lyrica += lyrics[i] + '\n'
-            lyricus = lyrica.rstrip() + '"\n' # ending point
+            lyricus = lyrica.rstrip() + '"\n' # remove last \n + ending point
             return lyricus
     except Exception as e:
         print("getLyrics - The following exception was catched: " + str(e))
 
 def getArtistAndSong():
     try:
-        artist = string.capwords(band.replace('/',''))
-        songTitle = string.capwords(song)
+        artist = string.capwords(band.replace('/','')) # capitalize band name
+        songTitle = string.capwords(song) #capitalize song name
         return artist + ' - ' + songTitle
     except Exception as e:
         print("getSongAndArtist - The following exception was catched: " + str(e))
