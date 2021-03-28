@@ -6,12 +6,12 @@ from os import environ # help heroku use credentials
 import tweepy # twitter integration
 
 ##### hardcoded values
-expected_lyrics_length = 180
+expected_lyrics_length = 200
 
 ##### GENERATING GET REQUEST
 base_url = 'https://api.lyrics.ovh/v1/'
-band = 'Arctic monkeys' + '/'
-song = 'arabella'
+band = 'kasabian' + '/'
+song = 'underdog'
 
 def getLyrics():
     try:
@@ -67,14 +67,13 @@ def callTwitter(main_message):
         print("Error code: " + errorcode)
     except Exception as e:
         print("callTwitter - The following exception was catched: " + str(e))
-        print("Breaking from loop. Better luck next time.")
 
 ####### main method
 try:
-    lyrica = getLyrics()
+    lyrics = getLyrics()
     authorAndSong = getArtistAndSong()
     hashtags = getHashtags()
-    message = lyrica + '\n' + authorAndSong + '\n' + hashtags
+    message = lyrics + '\n' + authorAndSong + '\n' + hashtags
     print(message)
     callTwitter(message)
 except Exception as e:
