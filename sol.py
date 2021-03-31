@@ -10,8 +10,8 @@ expected_lyrics_length = 200
 
 ##### GENERATING GET REQUEST
 base_url = 'https://api.lyrics.ovh/v1/'
-band = 'daft punk' + '/'
-song = 'around the world'
+band = 'tool' + '/'
+song = 'parabola'
 
 def getLyrics():
     try:
