@@ -12,6 +12,9 @@ expected_lyrics_length = 200
 base_url = 'https://api.lyrics.ovh/v1/'
 band = 'tool' + '/'
 song = 'parabola'
+##### GENERATING 2ND GET REQUEST
+base_wikiurl = 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&titles='
+end_wikiurl = '_(song)'
 
 def getLyrics():
     try:
@@ -43,6 +46,14 @@ def getArtistAndSong():
 
 def getHashtags():
     return '#lyrics'
+
+def generateReplyToMainTweet():
+    resp = requests.get(base_wikiurl+song+end_wikiurl)
+    # MANAGING RESPONSE
+    if resp.status_code != 200:
+       print('GET tasks status: {}'.format(resp.status_code))
+    else:
+       a = resp.json()
 
 def callTwitter(main_message):
     ##### GENERATING TWITTER REQUEST
