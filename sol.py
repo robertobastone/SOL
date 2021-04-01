@@ -14,7 +14,8 @@ band = 'tool' + '/'
 song = 'parabola'
 ##### GENERATING 2ND GET REQUEST
 base_wikiurl = 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&titles='
-end_wikiurl = '_(song)'
+end_wikiurl = '_(song)' # assuming if all songs url on wiki end like this
+wikilink = 'https://en.wikipedia.org/wiki/'
 
 def getLyrics():
     try:
@@ -48,12 +49,20 @@ def getHashtags():
     return '#lyrics'
 
 def generateReplyToMainTweet():
-    resp = requests.get(base_wikiurl+song+end_wikiurl)
-    # MANAGING RESPONSE
-    if resp.status_code != 200:
-       print('GET tasks status: {}'.format(resp.status_code))
-    else:
-       a = resp.json()
+    try:
+        resp = requests.get(base_wikiurl+song+end_wikiurl)
+        # MANAGING RESPONSE
+        if resp.status_code != 200:
+           print('GET tasks status: {}'.format(resp.status_code))
+        else:
+           extract = resp.json()['query']['pages']['page']['extract']
+           summary = extract[:expected_lyrics_length]+'...'
+           print(summary)
+           wiki_redirect = wikilink+song+end_wikiurl
+           print(wiki_redirect)
+    except Exception as e:
+        print("generateReplyToMainTweet - The following exception was catched: " + str(e))
+
 
 def callTwitter(main_message):
     ##### GENERATING TWITTER REQUEST
