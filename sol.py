@@ -28,7 +28,7 @@ def getLyrics():
             lyrica = '"' # starting point
             for i in range(len(lyrics)):
                 if (len(lyrica) + len(lyrics[i])) > expected_lyrics_length:
-                    break # keep in check length in order to not
+                    break # keep in check length in order to not exceed Twitter 280 characters limit
                 else:
                     lyrica += lyrics[i] + '\n'
             lyricus = lyrica.rstrip() + '"\n' # remove last \n + ending point
