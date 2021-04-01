@@ -7,7 +7,7 @@ After it retrieves the lyrics, it will tweet on the twitter account, whose crede
 # Milestones
 1. March, 27 2021: SOL 1.00
    - minimally functioning code
-2. March, 27 2021: DADBot 1.01
+2. March, 27 2021: SOL 1.01
    - FP version
 
 # Versions
