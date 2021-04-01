@@ -80,7 +80,11 @@ def callTwitter(main_message):
             print("The user credentials are invalid.")
         else:
             print("The user credentials are valid.")
-            api.update_status(main_message)
+            # post first tweet about lyrics
+            first_tweet = api.update_status(main_message)
+            # reply to this tweet
+            #api.update_status('@<username> My status, first_tweet.id)
+            #api.update_status(status = 'your reply', in_reply_to_status_id = tweetid , auto_populate_reply_metadata=True)
     except tweepy.error.TweepError as e:
         print("callTwitter - The following exception was catched: " + str(e))
         errorcode = str(e.api_code)
