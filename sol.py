@@ -13,7 +13,7 @@ base_url = 'https://api.lyrics.ovh/v1/'
 band = 'tool' + '/'
 song = 'parabola'
 ##### GENERATING 2ND GET REQUEST
-base_wikiurl = 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&titles='
+base_wikiurl = 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&titles='
 end_wikiurl = '_(song)'
 
 def getLyrics():
