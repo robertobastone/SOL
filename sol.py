@@ -6,8 +6,10 @@ from os import environ # help heroku use credentials
 import tweepy # twitter integration
 
 ######################### STARTING CONFIGURATIONS #########################
+
 ##### hardcoded values
 expected_lyrics_length = 200
+list_words_to_keep_lowercase = ['of','the','with']
 
 ##### 1ST GET REQUEST PARAMETERS
 base_url = 'https://api.lyrics.ovh/v1/'
@@ -22,6 +24,7 @@ end_wikiurl_3 = ''                 # one must take these three scenarios into ac
 wikilink = 'https://en.wikipedia.org/wiki/'
 
 ######################### CODE #########################
+
 ###### CREATING FIRST TWEET
 #retireve lyrics
 def getLyrics():
@@ -67,6 +70,17 @@ def generateMainMessage():
     return message
 
 ##### CREATING SECOND TWEET (REPLY)
+
+# must adapt text format for wikipedia api and url generate methods
+def rewriteTextAcconrdingToWikipediaStandard(text):
+    text_words = text.split(' ')
+    wiki_format = ''
+    for i in range(len(text_words)):
+        if text_words[i] not in list_words_to_keep_lowercase:
+            wiki_format += text_words[i].capitalize() + "_"
+        else:
+            wiki_format += text_words[i] + "_"
+    return wiki_format.rstrip("_")
 
 # try again with another end url
 def tryDifferentUrl(end_wikiurl):
