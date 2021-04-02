@@ -11,8 +11,8 @@ expected_lyrics_length = 200
 
 ##### 1ST GET REQUEST PARAMETERS
 base_url = 'https://api.lyrics.ovh/v1/'
-band = 'queens of the stone age' + '/'
-song = 'Go with the Flow'
+band = 'Foo Fighters' + '/'
+song = 'Everlong'
 
 ##### 2ND GET REQUEST PARAMETERS
 base_wikiurl = 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&explaintext&titles='
