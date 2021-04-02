@@ -18,8 +18,8 @@ Afterwards it will attach a reply to the tweet, whose body will be the first <i>
 ## Version 1.01 (March, 21 2021)
 - configuring heroku and twitter integration
 ## Version 1.02 (March, 28 2021)
-- improving overall flow
+- improving overall flows
 ## Version 1.03 (April, 2 2021)
 - adding reply functionality
-## Version 1.03 (April, 2 2021)
+## Version 1.04 (April, 2 2021)
 - adding more safety checks to correctly call <a href="https://en.wikipedia.org/w/api.php">Wikipedia api</a>.
