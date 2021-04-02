@@ -132,12 +132,10 @@ def callTwitter(main_message, reply):
 ####### MAIN METHOD
 try:
     # create body first tweet
-    #message = generateMainMessage()
-    # api.lyrics.ovh raising error 504 - 2021/04/02
-    message = ''
+    message = generateMainMessage()
     # create body second one
     reply = generateReply()
     # call twitter
-    #callTwitter(message,reply)
+    callTwitter(message,reply)
 except Exception as e:
     print("main - The following exception was catched: " + str(e))
