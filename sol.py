@@ -36,7 +36,7 @@ def getLyrics():
                 if (len(lyrica) + len(lyrics[i])) > expected_lyrics_length:
                     break # keep in check length in order to not exceed Twitter 280 characters limit
                 else:
-                    lyrica += lyrics[i] + '\n'
+                    lyrica += lyrics[i].capitalize() + '\n'
             lyricus = lyrica.rstrip() + '"\n' # remove last \n + ending point
             return lyricus
     except Exception as e:
