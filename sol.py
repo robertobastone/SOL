@@ -8,15 +8,18 @@ import tweepy # twitter integration
 ##### hardcoded values
 expected_lyrics_length = 200
 
-##### GENERATING GET REQUEST
+##### 1ST GET REQUEST PARAMETERS
 base_url = 'https://api.lyrics.ovh/v1/'
 band = 'tool' + '/'
 song = 'parabola'
-##### GENERATING 2ND GET REQUEST
+##### 2ND GET REQUEST PARAMETERS
 base_wikiurl = 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&titles='
 end_wikiurl = '_(song)' # assuming if all songs url on wiki end like this
 wikilink = 'https://en.wikipedia.org/wiki/'
 
+###### CREATING FIRST TWEET
+
+#retireve lyrics
 def getLyrics():
     try:
         resp = requests.get(base_url+band+song)
@@ -37,6 +40,7 @@ def getLyrics():
     except Exception as e:
         print("getLyrics - The following exception was catched: " + str(e))
 
+# retrieve artist and song name
 def getArtistAndSong():
     try:
         artist = string.capwords(band.replace('/','')) # capitalize band name
@@ -45,10 +49,23 @@ def getArtistAndSong():
     except Exception as e:
         print("getSongAndArtist - The following exception was catched: " + str(e))
 
+# retrieve hashtags
 def getHashtags():
     return '#lyrics'
 
-def generateReplyToMainTweet():
+# gather informations and create first tweet body
+def generateMainMessage():
+    lyrics = getLyrics()
+    authorAndSong = getArtistAndSong()
+    hashtags = getHashtags()
+    message = lyrics + '\n' + authorAndSong + '\n' + hashtags
+    print(message)
+    return message
+
+##### CREATING SECOND TWEET (REPLY)
+
+# get song summary from wikipedia api
+def getWikiSummary():
     try:
         resp = requests.get(base_wikiurl+song+end_wikiurl)
         # MANAGING RESPONSE
@@ -57,14 +74,27 @@ def generateReplyToMainTweet():
         else:
            extract = resp.json()['query']['pages']['page']['extract']
            summary = extract[:expected_lyrics_length]+'...'
-           print(summary)
-           wiki_redirect = wikilink+song+end_wikiurl
-           print(wiki_redirect)
+           return summary
     except Exception as e:
         print("generateReplyToMainTweet - The following exception was catched: " + str(e))
 
+# generate related wikipedia article url
+def generateWikiUrl():
+    wiki_redirect = wikilink+song+end_wikiurl
+    print(wiki_redirect)
+    return wiki_redirect
 
-def callTwitter(main_message):
+# gather informations and create second twitter body
+def generateReply():
+    summary = getWikiSummary()
+    link = generateWikiUrl()
+    reply = summary + '\n' + link
+    print(reply)
+    return reply
+
+##### TWITTER INTEGRATION 
+
+def callTwitter(main_message, reply):
     ##### GENERATING TWITTER REQUEST
     # Credentials
     CONSUMER_KEY = environ['TWITTER_CONSUMER_KEY']
@@ -83,8 +113,8 @@ def callTwitter(main_message):
             # post first tweet about lyrics
             first_tweet = api.update_status(main_message)
             # reply to this tweet
-            #api.update_status('@<username> My status, first_tweet.id)
-            #api.update_status(status = 'your reply', in_reply_to_status_id = tweetid , auto_populate_reply_metadata=True)
+            api.update_status('@<username> reply, first_tweet.id)
+            #api.update_status(status = reply, in_reply_to_status_id = first_tweet.id , auto_populate_reply_metadata=True)
     except tweepy.error.TweepError as e:
         print("callTwitter - The following exception was catched: " + str(e))
         errorcode = str(e.api_code)
@@ -94,11 +124,11 @@ def callTwitter(main_message):
 
 ####### main method
 try:
-    lyrics = getLyrics()
-    authorAndSong = getArtistAndSong()
-    hashtags = getHashtags()
-    message = lyrics + '\n' + authorAndSong + '\n' + hashtags
-    print(message)
-    callTwitter(message)
+    # create body first tweet
+    message = generateMainMessage()
+    # create body second one
+    reply = generateReply()
+    # call twitter
+    #callTwitter(message,reply)
 except Exception as e:
     print("main - The following exception was catched: " + str(e))
