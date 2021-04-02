@@ -14,7 +14,7 @@ band = 'tool' + '/'
 song = 'parabola'
 ##### 2ND GET REQUEST PARAMETERS
 base_wikiurl = 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&titles='
-end_wikiurl = '_(song)' # assuming if all songs url on wiki end like this
+end_wikiurl = '_(song)' # assuming that all songs url on wiki end like this
 wikilink = 'https://en.wikipedia.org/wiki/'
 
 ###### CREATING FIRST TWEET
@@ -72,11 +72,14 @@ def getWikiSummary():
         if resp.status_code != 200:
            print('GET tasks status: {}'.format(resp.status_code))
         else:
-           extract = resp.json()['query']['pages']['page']['extract']
-           summary = extract[:expected_lyrics_length]+'...'
-           return summary
+            # given the structure of the response, to access the extract we need the pageid
+            keys_pages = resp.json()['query']['pages'].keys() # get keys
+            pageid = list(keys_pages)[0] #from keys to list of one element, from list of one element to single id
+            extract = resp.json()['query']['pages'][pageid]['extract']
+            summary = extract[:expected_lyrics_length]+'...' ## keep in check length in order to not exceed Twitter 280 characters limit
+            return summary
     except Exception as e:
-        print("generateReplyToMainTweet - The following exception was catched: " + str(e))
+        print("getWikiSummary - The following exception was catched: " + str(e))
 
 # generate related wikipedia article url
 def generateWikiUrl():
@@ -92,7 +95,7 @@ def generateReply():
     print(reply)
     return reply
 
-##### TWITTER INTEGRATION 
+##### TWITTER INTEGRATION
 
 def callTwitter(main_message, reply):
     ##### GENERATING TWITTER REQUEST
@@ -111,10 +114,13 @@ def callTwitter(main_message, reply):
         else:
             print("The user credentials are valid.")
             # post first tweet about lyrics
-            first_tweet = api.update_status(main_message)
-            # reply to this tweet
-            api.update_status('@<username> reply, first_tweet.id)
-            #api.update_status(status = reply, in_reply_to_status_id = first_tweet.id , auto_populate_reply_metadata=True)
+            if(main_message != ''):
+                first_tweet = api.update_status(main_message)
+                # reply to this tweet
+                #api.update_status('@<username> reply, first_tweet.id)
+                api.update_status(status = reply, in_reply_to_status_id = first_tweet.id , auto_populate_reply_metadata=True)
+            else:
+                api.update_status(status = reply, in_reply_to_status_id = '1377273096546177028', auto_populate_reply_metadata=True)
     except tweepy.error.TweepError as e:
         print("callTwitter - The following exception was catched: " + str(e))
         errorcode = str(e.api_code)
@@ -125,10 +131,12 @@ def callTwitter(main_message, reply):
 ####### main method
 try:
     # create body first tweet
-    message = generateMainMessage()
+    #message = generateMainMessage()
+    # api.lyrics.ovh raising error 504 - 2021/04/02
+    message = ''
     # create body second one
     reply = generateReply()
     # call twitter
-    #callTwitter(message,reply)
+    callTwitter(message,reply)
 except Exception as e:
     print("main - The following exception was catched: " + str(e))
