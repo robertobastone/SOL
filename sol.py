@@ -5,6 +5,7 @@ import re # more features involving strings
 from os import environ # help heroku use credentials
 import tweepy # twitter integration
 
+######################### STARTING CONFIGURATIONS #########################
 ##### hardcoded values
 expected_lyrics_length = 200
 
@@ -12,13 +13,14 @@ expected_lyrics_length = 200
 base_url = 'https://api.lyrics.ovh/v1/'
 band = 'tool' + '/'
 song = 'parabola'
+
 ##### 2ND GET REQUEST PARAMETERS
 base_wikiurl = 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&titles='
 end_wikiurl = '_(song)' # assuming that all songs url on wiki end like this
 wikilink = 'https://en.wikipedia.org/wiki/'
 
+######################### CODE #########################
 ###### CREATING FIRST TWEET
-
 #retireve lyrics
 def getLyrics():
     try:
@@ -59,11 +61,9 @@ def generateMainMessage():
     authorAndSong = getArtistAndSong()
     hashtags = getHashtags()
     message = lyrics + '\n' + authorAndSong + '\n' + hashtags
-    print(message)
     return message
 
 ##### CREATING SECOND TWEET (REPLY)
-
 # get song summary from wikipedia api
 def getWikiSummary():
     try:
@@ -84,7 +84,6 @@ def getWikiSummary():
 # generate related wikipedia article url
 def generateWikiUrl():
     wiki_redirect = wikilink+song+end_wikiurl
-    print(wiki_redirect)
     return wiki_redirect
 
 # gather informations and create second twitter body
@@ -92,13 +91,10 @@ def generateReply():
     summary = getWikiSummary()
     link = generateWikiUrl()
     reply = summary + '\n' + link
-    print(reply)
     return reply
 
 ##### TWITTER INTEGRATION
-
 def callTwitter(main_message, reply):
-    ##### GENERATING TWITTER REQUEST
     # Credentials
     CONSUMER_KEY = environ['TWITTER_CONSUMER_KEY']
     CONSUMER_SECRET = environ['TWITTER_CONSUMER_SECRET']
@@ -115,12 +111,11 @@ def callTwitter(main_message, reply):
             print("The user credentials are valid.")
             # post first tweet about lyrics
             if(main_message != ''):
-                first_tweet = api.update_status(main_message)
+                first_tweet = api.update_status(status = main_message)
                 # reply to this tweet
-                #api.update_status('@<username> reply, first_tweet.id)
                 api.update_status(status = reply, in_reply_to_status_id = first_tweet.id , auto_populate_reply_metadata=True)
             else:
-                api.update_status(status = reply, in_reply_to_status_id = '1377273096546177028', auto_populate_reply_metadata=True)
+                api.update_status(status = reply)
     except tweepy.error.TweepError as e:
         print("callTwitter - The following exception was catched: " + str(e))
         errorcode = str(e.api_code)
@@ -128,7 +123,7 @@ def callTwitter(main_message, reply):
     except Exception as e:
         print("callTwitter - The following exception was catched: " + str(e))
 
-####### main method
+####### MAIN METHOD
 try:
     # create body first tweet
     #message = generateMainMessage()
