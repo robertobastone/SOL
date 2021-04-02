@@ -164,6 +164,6 @@ try:
     # call twitter
     print('main - first message is: ' + str(message))
     print('main - second message is: ' + str(reply))
-    #callTwitter(message,reply)
+    callTwitter(message,reply)
 except Exception as e:
     print("main - The following exception was catched: " + str(e))
