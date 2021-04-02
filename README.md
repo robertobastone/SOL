@@ -21,3 +21,5 @@ Afterwards it will attach a reply to the tweet, whose body will be the first <i>
 - improving overall flow
 ## Version 1.03 (April, 2 2021)
 - adding reply functionality
+## Version 1.03 (April, 2 2021)
+- adding more safety checks to correctly call <a href="https://en.wikipedia.org/w/api.php">Wikipedia api</a>.

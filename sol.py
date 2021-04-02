@@ -11,12 +11,14 @@ expected_lyrics_length = 200
 
 ##### 1ST GET REQUEST PARAMETERS
 base_url = 'https://api.lyrics.ovh/v1/'
-band = 'tool' + '/'
-song = 'lateralus'
+band = 'queens of the stone age' + '/'
+song = 'Go with the Flow'
 
 ##### 2ND GET REQUEST PARAMETERS
 base_wikiurl = 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&explaintext&titles='
-end_wikiurl = '_(song)' # assuming that all songs url on wiki end like this
+end_wikiurl_1 = '_('+string.capwords(band.replace('/',''))+' song)' # wikipedia doesn't follow a standard end url for song articles
+end_wikiurl_2 = '_(song)'          # sometimes it's (band+song) or (song) or nothing
+end_wikiurl_3 = ''                 # one must take these three scenarios into account
 wikilink = 'https://en.wikipedia.org/wiki/'
 
 ######################### CODE #########################
@@ -36,7 +38,8 @@ def getLyrics():
                 if (len(lyrica) + len(lyrics[i])) > expected_lyrics_length:
                     break # keep in check length in order to not exceed Twitter 280 characters limit
                 else:
-                    lyrica += lyrics[i].capitalize() + '\n'
+                    if "(" not in lyrics[i]:
+                        lyrica += lyrics[i][0].capitalize() + lyrics[i][1:] + '\n' #capitalize only first letter of verse
             lyricus = lyrica.rstrip() + '"\n' # remove last \n + ending point
             return lyricus
     except Exception as e:
@@ -64,40 +67,63 @@ def generateMainMessage():
     return message
 
 ##### CREATING SECOND TWEET (REPLY)
+
+# try again with another end url
+def tryDifferentUrl(end_wikiurl):
+    if end_wikiurl == end_wikiurl_1:
+        return getWikiSummary(end_wikiurl_2)
+    elif end_wikiurl == end_wikiurl_2:
+        return getWikiSummary(end_wikiurl_3)
+    else:
+        print("Can\'t find what you\'re looking for..." )
+
 # get song summary from wikipedia api
-def getWikiSummary():
+def getWikiSummary(end_wikiurl):
     try:
         article = ""
         resp = requests.get(base_wikiurl+song+end_wikiurl)
         # managing response
+        print(base_wikiurl+song+end_wikiurl)
         if resp.status_code != 200:
            print('GET tasks status: {}'.format(resp.status_code))
         else:
             # retrieve article
             pageid = list(resp.json()['query']['pages'].keys())[0] # given the structure of the response, to access the extract we need the pageid
-            extract = resp.json()['query']['pages'][pageid]['extract'] # this is the whole article
-            split_extract = re.split('[\r\n]',extract) # remove \n and \r from it and splitting it
-            clean_extract = [extraxct_element for extraxct_element in split_extract if extraxct_element] # remove blank strings
-            for i in range(len(clean_extract)):
-                if "==" not in clean_extract[i]: # this identifies paragraph title and we can remove them
-                    article += clean_extract[i] + ' '
-            summary = article[:expected_lyrics_length]+'...' ## keep in check length in order to not exceed Twitter 280 characters limit
-            print(summary)
-            return summary
+            if pageid == "-1":
+                return tryDifferentUrl(end_wikiurl)
+            else:
+                extract = resp.json()['query']['pages'][pageid]['extract'] # this is the whole article
+                if extract != "":
+                    split_extract = re.split('[\r\n]',extract) # remove \n and \r from it and splitting it
+                    clean_extract = [extract_element for extract_element in split_extract if extract_element] # remove blank strings
+                    for i in range(len(clean_extract)):
+                        if "==" not in clean_extract[i]: # this identifies paragraph title and we can remove them
+                            article += clean_extract[i] + ' '
+                    summary = article[:expected_lyrics_length]+'...' ## keep in check length in order to not exceed Twitter 280 characters limit
+                    return summary, end_wikiurl
+                else:
+                    return tryDifferentUrl(end_wikiurl)
     except Exception as e:
         print("getWikiSummary - The following exception was catched: " + str(e))
 
 # generate related wikipedia article url
-def generateWikiUrl():
-    wiki_redirect = wikilink+song+end_wikiurl
-    return wiki_redirect
+def generateWikiUrl(end_wikiurl):
+    try:
+        wiki_redirect = wikilink+song+end_wikiurl
+        print(wiki_redirect)
+        return wiki_redirect
+    except Exception as e:
+        print("generateWikiUrl - The following exception was catched: " + str(e))
 
 # gather informations and create second twitter body
 def generateReply():
-    summary = getWikiSummary()
-    link = generateWikiUrl()
-    reply = summary + '\n' + link
-    return reply
+    try:
+        summary, end_wikiurl = getWikiSummary(end_wikiurl_1)
+        link = generateWikiUrl(end_wikiurl)
+        reply = summary + '\n' + link
+        return reply
+    except Exception as e:
+        print("generateReply - The following exception was catched: " + str(e))
 
 ##### TWITTER INTEGRATION
 def callTwitter(main_message, reply):
@@ -136,6 +162,8 @@ try:
     # create body second one
     reply = generateReply()
     # call twitter
-    callTwitter(message,reply)
+    print('main - first message is: ' + str(message))
+    print('main - second message is: ' + str(reply))
+    #callTwitter(message,reply)
 except Exception as e:
     print("main - The following exception was catched: " + str(e))
