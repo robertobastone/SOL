@@ -12,10 +12,10 @@ expected_lyrics_length = 200
 ##### 1ST GET REQUEST PARAMETERS
 base_url = 'https://api.lyrics.ovh/v1/'
 band = 'tool' + '/'
-song = 'parabola'
+song = 'lateralus'
 
 ##### 2ND GET REQUEST PARAMETERS
-base_wikiurl = 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&titles='
+base_wikiurl = 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&explaintext&titles='
 end_wikiurl = '_(song)' # assuming that all songs url on wiki end like this
 wikilink = 'https://en.wikipedia.org/wiki/'
 
@@ -67,16 +67,22 @@ def generateMainMessage():
 # get song summary from wikipedia api
 def getWikiSummary():
     try:
+        article = ""
         resp = requests.get(base_wikiurl+song+end_wikiurl)
-        # MANAGING RESPONSE
+        # managing response
         if resp.status_code != 200:
            print('GET tasks status: {}'.format(resp.status_code))
         else:
-            # given the structure of the response, to access the extract we need the pageid
-            keys_pages = resp.json()['query']['pages'].keys() # get keys
-            pageid = list(keys_pages)[0] #from keys to list of one element, from list of one element to single id
-            extract = resp.json()['query']['pages'][pageid]['extract']
-            summary = extract[:expected_lyrics_length]+'...' ## keep in check length in order to not exceed Twitter 280 characters limit
+            # retrieve article
+            pageid = list(resp.json()['query']['pages'].keys())[0] # given the structure of the response, to access the extract we need the pageid
+            extract = resp.json()['query']['pages'][pageid]['extract'] # this is the whole article
+            split_extract = re.split('[\r\n]',extract) # remove \n and \r from it and splitting it
+            clean_extract = [extraxct_element for extraxct_element in split_extract if extraxct_element] # remove blank strings
+            for i in range(len(clean_extract)):
+                if "==" not in clean_extract[i]: # this identifies paragraph title and we can remove them
+                    article += clean_extract[i] + ' '
+            summary = article[:expected_lyrics_length]+'...' ## keep in check length in order to not exceed Twitter 280 characters limit
+            print(summary)
             return summary
     except Exception as e:
         print("getWikiSummary - The following exception was catched: " + str(e))
@@ -132,6 +138,6 @@ try:
     # create body second one
     reply = generateReply()
     # call twitter
-    callTwitter(message,reply)
+    #callTwitter(message,reply)
 except Exception as e:
     print("main - The following exception was catched: " + str(e))

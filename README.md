@@ -4,7 +4,7 @@ SOng Lyrics (SOL) is a little script that retrieves the first <i>n</i> verses of
 
 After it retrieves the lyrics, it will tweet on the twitter account, whose credentials are retrieved from the <b>environ</b> package, through the package <b>tweepy</b>
 
-Afterwards it will attach a reply to the tweet, whose body will be the first <i>m</i> characters of the Wikipedia song article first paragraph and also the link to the before-mentioned article. The extract of the paragraph is retrieved via <a href="https://en.wikipedia.org/w/api.php">Wikipedia api</a>.
+Afterwards it will attach a reply to the tweet, whose body will be the first <i>m</i> characters of the Wikipedia song article and also the link to the before-mentioned article. The extract of the paragraph is retrieved via <a href="https://en.wikipedia.org/w/api.php">Wikipedia api</a>.
 
 # Milestones
 1. March, 27 2021: SOL 1.00
