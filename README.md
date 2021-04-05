@@ -25,5 +25,5 @@ Afterwards it will attach a reply to the tweet, whose body will be the first <i>
 - adding more safety checks to correctly call <a href="https://en.wikipedia.org/w/api.php">Wikipedia api</a>.
 ## Version 1.05 (April, 3 2021)
 - fix: code capable of correctly writing urls accordingly to wikipedia format.
-## Version 1.05 (April, 5 2021)
+## Version 1.06 (April, 5 2021)
 - Manage infos like author and urls in separate file ("sol_settings.py") to easily change them, thus preventing from introducing errors in main file, and "percent-encode"  song name before writing corresponding url
