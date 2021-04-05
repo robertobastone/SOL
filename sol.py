@@ -8,9 +8,6 @@ import sol_settings as setting # main info stored here
 
 ######################### STARTING CONFIGURATIONS #########################
 
-##### hardcoded values
-expected_lyrics_length = 200
-
 ######################### CODE #########################
 
 ###### CREATING FIRST TWEET
@@ -26,7 +23,7 @@ def getLyrics():
             lyrics = [raw_lyrics_element for raw_lyrics_element in raw_lyrics if raw_lyrics_element] # remove blank strings
             lyrica = '"' # starting point
             for i in range(len(lyrics)):
-                if (len(lyrica) + len(lyrics[i])) > expected_lyrics_length:
+                if (len(lyrica) + len(lyrics[i])) > setting.max_lyrics_length:
                     break # keep in check length in order to not exceed Twitter 280 characters limit
                 else:
                     if "(" not in lyrics[i]:
