@@ -86,7 +86,7 @@ def getWikiSummary(end_wikiurl):
                     for i in range(len(clean_extract)):
                         if "==" not in clean_extract[i]: # this identifies paragraph title and we can remove them
                             article += clean_extract[i] + ' '
-                    summary = article[:expected_lyrics_length]+'...' ## keep in check length in order to not exceed Twitter 280 characters limit
+                    summary = article[:setting.max_lyrics_length]+'...' ## keep in check length in order to not exceed Twitter 280 characters limit
                     return summary, end_wikiurl
                 else:
                     return tryDifferentUrl(end_wikiurl)
