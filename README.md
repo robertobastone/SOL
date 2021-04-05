@@ -15,7 +15,7 @@ Afterwards it will attach a reply to the tweet, whose body will be the first <i>
 # Versions
 ## Version 1.00 (March, 27 2021)
 - first complete version
-## Version 1.01 (March, 21 2021)
+## Version 1.01 (March, 27 2021)
 - configuring heroku and twitter integration
 ## Version 1.02 (March, 28 2021)
 - improving overall flows
