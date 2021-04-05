@@ -4,39 +4,12 @@ import string # working with strings
 import re # more features involving strings
 from os import environ # help heroku use credentials
 import tweepy # twitter integration
+import sol_settings as setting # main info stored here
 
 ######################### STARTING CONFIGURATIONS #########################
 
 ##### hardcoded values
 expected_lyrics_length = 200
-list_words_to_keep_lowercase = ['of','the','with','on','for','a','in']
-
-##### 1ST GET REQUEST PARAMETERS
-base_url = 'https://api.lyrics.ovh/v1/'
-band = 'queens of the stone age' + '/'
-song = 'my god is the sun' # if a song starts with 'the', write it as 'The'
-
-##### 2ND GET REQUEST PARAMETERS
-# must adapt text format for wikipedia api and url generate methods
-def rewriteTextAccordingToWikipediaStandard(text):
-    text_words = text.split(' ')
-    wiki_format = ''
-    for i in range(len(text_words)):
-        if text_words[i] not in list_words_to_keep_lowercase:
-            wiki_format += text_words[i].capitalize() + "_"
-        else:
-            wiki_format += text_words[i] + "_"
-    return wiki_format.rstrip("_")
-
-band_wikiformat = rewriteTextAccordingToWikipediaStandard(band.replace('/',''))
-song_wikiformat = rewriteTextAccordingToWikipediaStandard(song)
-print(band_wikiformat)
-print(song_wikiformat)
-base_wikiurl = 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&explaintext&titles='
-end_wikiurl_1 = '_('+band_wikiformat+'_song)' # wikipedia doesn't follow a standard end url for song articles
-end_wikiurl_2 = '_(song)'          # sometimes it's (band+song) or (song) or nothing
-end_wikiurl_3 = ''                 # one must take these three scenarios into account
-wikilink = 'https://en.wikipedia.org/wiki/'
 
 ######################### CODE #########################
 
@@ -44,7 +17,7 @@ wikilink = 'https://en.wikipedia.org/wiki/'
 #retireve lyrics
 def getLyrics():
     try:
-        resp = requests.get(base_url+band+song)
+        resp = requests.get(setting.base_url+setting.band+setting.song)
         # MANAGING RESPONSE
         if resp.status_code != 200:
             print('GET tasks status: {}'.format(resp.status_code))
@@ -58,16 +31,15 @@ def getLyrics():
                 else:
                     if "(" not in lyrics[i]:
                         lyrica += lyrics[i][0].capitalize() + lyrics[i][1:] + '\n' #capitalize only first letter of verse
-            lyricus = lyrica.rstrip() + '"\n' # remove last \n + ending point
-            return lyricus
+            return lyrica
     except Exception as e:
         print("getLyrics - The following exception was catched: " + str(e))
 
 # retrieve artist and song name
 def getArtistAndSong():
     try:
-        artist = string.capwords(band.replace('/','')) # capitalize band name
-        songTitle = string.capwords(song) #capitalize song name
+        artist = string.capwords(setting.band.replace('/','')) # capitalize band name
+        songTitle = string.capwords(setting.song) #capitalize song name
         return artist + ' - ' + songTitle
     except Exception as e:
         print("getSongAndArtist - The following exception was catched: " + str(e))
@@ -88,10 +60,10 @@ def generateMainMessage():
 
 # try again with another end url
 def tryDifferentUrl(end_wikiurl):
-    if end_wikiurl == end_wikiurl_1:
-        return getWikiSummary(end_wikiurl_2)
-    elif end_wikiurl == end_wikiurl_2:
-        return getWikiSummary(end_wikiurl_3)
+    if end_wikiurl == setting.end_wikiurl_1:
+        return getWikiSummary(setting.end_wikiurl_2)
+    elif end_wikiurl == setting.end_wikiurl_2:
+        return getWikiSummary(setting.end_wikiurl_3)
     else:
         print("Can\'t find what you\'re looking for..." )
 
@@ -99,9 +71,9 @@ def tryDifferentUrl(end_wikiurl):
 def getWikiSummary(end_wikiurl):
     try:
         article = ""
-        resp = requests.get(base_wikiurl+song_wikiformat+end_wikiurl)
+        resp = requests.get(setting.base_wikiurl+setting.song_wikiformat+end_wikiurl)
         # managing response
-        print(base_wikiurl+song_wikiformat+end_wikiurl)
+        # print(setting.base_wikiurl+setting.song_wikiformat+end_wikiurl)
         if resp.status_code != 200:
            print('GET tasks status: {}'.format(resp.status_code))
         else:
@@ -127,8 +99,8 @@ def getWikiSummary(end_wikiurl):
 # generate related wikipedia article url
 def generateWikiUrl(end_wikiurl):
     try:
-        wiki_redirect = wikilink+song_wikiformat+end_wikiurl
-        print(wiki_redirect)
+        wiki_redirect = setting.wikilink+requests.utils.quote(setting.song_wikiformat, safe='')+end_wikiurl
+        # must encode song name, i.e. where_did_all_the_love_go? --- where_did_all_the_love_go%3F
         return wiki_redirect
     except Exception as e:
         print("generateWikiUrl - The following exception was catched: " + str(e))
@@ -136,7 +108,7 @@ def generateWikiUrl(end_wikiurl):
 # gather informations and create second twitter body
 def generateReply():
     try:
-        summary, end_wikiurl = getWikiSummary(end_wikiurl_1)
+        summary, end_wikiurl = getWikiSummary(setting.end_wikiurl_1)
         link = generateWikiUrl(end_wikiurl)
         reply = summary + '\n' + link
         return reply
