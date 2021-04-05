@@ -2,6 +2,9 @@
 # this file is created to simplify the management of the informations
 # needed to make the code work without having to modify the main file itself
 
+# manage maximum length of lyrics
+max_lyrics_length = 200
+
 ##### 1ST GET REQUEST PARAMETERS
 base_url = 'https://api.lyrics.ovh/v1/'
 band = 'kasabian' + '/'
