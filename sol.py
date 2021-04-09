@@ -28,7 +28,8 @@ def getLyrics():
                 else:
                     if "(" not in lyrics[i]:
                         lyrica += lyrics[i][0].capitalize() + lyrics[i][1:] + '\n' #capitalize only first letter of verse
-            return lyrica
+            lyricus = lyrica.rstrip() + '"\n' # remove last \n + ending point
+            return lyricus
     except Exception as e:
         print("getLyrics - The following exception was catched: " + str(e))
 
