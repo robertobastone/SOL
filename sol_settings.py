@@ -8,7 +8,7 @@ max_lyrics_length = 200
 ##### 1ST GET REQUEST PARAMETERS
 base_url = 'https://api.lyrics.ovh/v1/'
 band = 'Radiohead' + '/'
-song = 'Spectre' # if a song starts with 'the', write it as 'The'
+song = 'Reckoner' # if a song starts with 'the', write it as 'The'
 
 ##### 2ND GET REQUEST PARAMETERS
 list_words_to_keep_lowercase = ['of','the','with','on','for','a','in']
